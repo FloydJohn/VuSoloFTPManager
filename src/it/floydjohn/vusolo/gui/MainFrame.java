@@ -1,13 +1,11 @@
 package it.floydjohn.vusolo.gui;
 
 import it.floydjohn.vusolo.net.FTPManager;
-import org.apache.commons.net.ftp.FTPClient;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
