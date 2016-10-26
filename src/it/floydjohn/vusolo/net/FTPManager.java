@@ -1,7 +1,6 @@
 package it.floydjohn.vusolo.net;
 
-
-import it.floydjohn.vusolo.gui.MainFrame;
+import it.floydjohn.vusolo.utils.Settings;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -14,39 +13,26 @@ import java.nio.file.Paths;
  */
 
 public class FTPManager {
-    public static final String TEMP_FILE = ".temp";
+    private static final String TEMP_FILE = ".temp";
     private static FTPManager __instance;
-    private MainFrame mainFrame;
     private FTPClient ftpClient;
 
     private FTPManager() {}
-
-    public void setMainFrame(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-    }
 
     public static FTPManager getInstance() {
         if (__instance == null) __instance = new FTPManager();
         return __instance;
     }
 
-    private void setConnected () {
-        if (ftpClient != null) {
-            mainFrame.setFTPEnabled(true);
-        }
-    }
-
-    public void connect(String IP, String user, String password) {
+    public void connect() throws IOException {
         ftpClient = new FTPClient();
         try {
-            ftpClient.connect(IP, 21);
-            ftpClient.login(user, password);
+            ftpClient.connect(Settings.getInstance().get(Settings.FTP_IP), Integer.valueOf(Settings.getInstance().get(Settings.FTP_PRT, "21")));
+            ftpClient.login(Settings.getInstance().get(Settings.FTP_USR), Settings.getInstance().get(Settings.FTP_PWD));
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-
-            setConnected();
         } catch (IOException e) {
-            ftpClient = null;
+            throw new IOException("Error while connecting: " + e.getMessage());
         }
     }
 

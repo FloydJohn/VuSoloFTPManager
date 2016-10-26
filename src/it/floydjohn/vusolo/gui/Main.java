@@ -1,7 +1,5 @@
 package it.floydjohn.vusolo.gui;
 
-import it.floydjohn.vusolo.net.FTPManager;
-
 import javax.swing.*;
 
 /**
@@ -15,7 +13,6 @@ public class Main {
         catch (Exception ignored) {}
 
         MainFrame frame = new MainFrame();
-        FTPManager.getInstance().setMainFrame(frame);
         frame.setVisible(true);
     }
 }
