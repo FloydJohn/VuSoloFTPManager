@@ -1,4 +1,6 @@
-package it.floydjohn.vusolo.gui;
+package it.floydjohn.vusolo;
+
+import it.floydjohn.vusolo.gui.frames.MainFrame;
 
 import javax.swing.*;
 

@@ -1,6 +1,6 @@
 package it.floydjohn.vusolo.gui.panels;
 
-import it.floydjohn.vusolo.gui.MainFrame;
+import it.floydjohn.vusolo.gui.frames.MainFrame;
 import it.floydjohn.vusolo.net.FTPManager;
 import it.floydjohn.vusolo.utils.Settings;
 

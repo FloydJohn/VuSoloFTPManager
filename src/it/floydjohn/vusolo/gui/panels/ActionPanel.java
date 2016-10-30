@@ -1,12 +1,16 @@
 package it.floydjohn.vusolo.gui.panels;
 
-import it.floydjohn.vusolo.gui.MainFrame;
+import it.floydjohn.vusolo.gui.components.CopyPastePopUp;
 import it.floydjohn.vusolo.gui.dialogs.SettingsDialog;
+import it.floydjohn.vusolo.gui.frames.MainFrame;
 import it.floydjohn.vusolo.net.FTPManager;
 import it.floydjohn.vusolo.utils.Settings;
 
 import javax.swing.*;
+import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -95,6 +99,33 @@ public class ActionPanel extends JPanel {
         settingsButton.addActionListener(actionEvent -> {
             SettingsDialog settingsDialog = new SettingsDialog(mainFrame);
             settingsDialog.setVisible(true);
+        });
+
+        uploadTArea.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    doPop(e);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    doPop(e);
+            }
+
+            private void doPop(MouseEvent e) {
+
+                if (!uploadTArea.isEnabled()) return;
+
+                CopyPastePopUp menu = new CopyPastePopUp();
+
+                Action copyAction = new DefaultEditorKit.CopyAction();
+                Action pasteAction = new DefaultEditorKit.PasteAction();
+
+                menu.setCopyAction(copyAction);
+                menu.setPasteAction(pasteAction);
+
+                menu.show(e.getComponent(), e.getX(), e.getY());
+            }
         });
     }
 

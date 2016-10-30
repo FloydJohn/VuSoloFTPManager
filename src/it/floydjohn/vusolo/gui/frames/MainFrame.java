@@ -1,4 +1,4 @@
-package it.floydjohn.vusolo.gui;
+package it.floydjohn.vusolo.gui.frames;
 
 import it.floydjohn.vusolo.gui.panels.ActionPanel;
 import it.floydjohn.vusolo.gui.panels.ConnectionPanel;
@@ -18,7 +18,7 @@ public class MainFrame extends JFrame{
     private ConnectionPanel connectionPanel = new ConnectionPanel(this);
 
 
-    MainFrame() {
+    public MainFrame() {
 
         super();
 
