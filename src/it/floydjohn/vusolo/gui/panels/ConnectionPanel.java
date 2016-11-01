@@ -2,6 +2,7 @@ package it.floydjohn.vusolo.gui.panels;
 
 import it.floydjohn.vusolo.gui.frames.MainFrame;
 import it.floydjohn.vusolo.net.FTPManager;
+import it.floydjohn.vusolo.utils.NetScanner;
 import it.floydjohn.vusolo.utils.Settings;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class ConnectionPanel extends JPanel {
     private JTextField pwdField = new JPasswordField(10);
     private JButton connectButton = new JButton("Connect");
     private JButton disconnectButton = new JButton("Disconnect");
+    private JButton scanButton = new JButton("Scan");
 
     public ConnectionPanel(MainFrame mainFrame) {
         super(new FlowLayout());
@@ -33,6 +35,7 @@ public class ConnectionPanel extends JPanel {
         this.add(pwdField);
         this.add(connectButton);
         this.add(disconnectButton);
+        this.add(scanButton);
 
         setBorder(BorderFactory.createTitledBorder("FTP Connection"));
 
@@ -58,10 +61,17 @@ public class ConnectionPanel extends JPanel {
             this.setConnectingEnabled(true);
             mainFrame.getActionPanel().setActionsEnabled(true);
         });
+
+        scanButton.addActionListener(actionEvent -> {
+            String host = NetScanner.getInstance().scan("192.168.1");
+            if (host != null) ipField.setText(host);
+            else JOptionPane.showMessageDialog(this, "Host not found.");
+        });
     }
 
     private void setConnectingEnabled(boolean enabled) {
         connectButton.setEnabled(enabled);
+        scanButton.setEnabled(enabled);
         ipField.setEnabled(enabled);
         userField.setEnabled(enabled);
         pwdField.setEnabled(enabled);
