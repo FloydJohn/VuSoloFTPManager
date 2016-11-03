@@ -1,55 +1,58 @@
 package it.floydjohn.vusolo.gui.dialogs;
 
-import it.floydjohn.vusolo.utils.Settings;
+import it.floydjohn.vusolo.settings.Setting;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SettingsDialog extends JDialog {
 
-    private JTextField filPath = new JTextField(20);
-    private JTextField ftpPort = new JTextField(20);
-    private JTextField webPort = new JTextField(20);
-
     public SettingsDialog(JFrame parent) {
         super(parent, "Settings", true);
-        this.setLayout(new GridBagLayout());
+        this.setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 
-        filPath.setText(Settings.getInstance().get(Settings.FTP_FIL, "/var/etc/CCam.cfg"));
-        ftpPort.setText(Settings.getInstance().get(Settings.FTP_PRT, "21"));
-        webPort.setText(Settings.getInstance().get(Settings.WEB_PRT, "80"));
+        HashMap<Setting.Type, JPanel> panels = new HashMap<>();
+        HashMap<Setting, JTextField> textFields = new HashMap<>();
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = 1;
-        c.gridwidth = 2;
-        c.weightx = 1;
+        for (Setting.Type type : Setting.Type.values()) {
+            if (type == Setting.Type.DO_NOT_SHOW) continue;
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(0, 2));
+            panel.setBorder(BorderFactory.createTitledBorder(type.name()));
+            panels.put(type, panel);
+        }
 
-        this.add(new JLabel("CCam config file"), c);
-        c.gridy = 1;
-        this.add(filPath, c);
-        c.gridy = 2;
-        this.add(new JLabel("FTP Port"), c);
-        c.gridy = 3;
-        this.add(ftpPort, c);
-        c.gridy = 4;
-        this.add(new JLabel("WebServer Port"), c);
-        c.gridy = 5;
-        this.add(webPort, c);
+        for (Setting setting : Setting.values()) {
+            if (setting.getType() == Setting.Type.DO_NOT_SHOW) continue;
+            JPanel panel = panels.get(setting.getType());
+            JLabel label = new JLabel(setting.getDesc());
+            JTextField field = new JTextField(setting.getDeft(), 20);
+            panel.add(label);
+            panel.add(field);
+            textFields.put(setting, field);
+        }
 
-        c.gridwidth = 1;
-        c.gridy = 6;
-        JButton ok = new JButton("Ok");
-        this.add(ok, c);
-        c.gridx = 1;
-        JButton cancel = new JButton("Cancel");
-        this.add(cancel, c);
+        for (JPanel panel : panels.values()) {
+            this.add(panel);
+            this.add(Box.createRigidArea(new Dimension(5, 0)));
+        }
+
+        JButton ok = new JButton("Ok"), cancel = new JButton("Cancel");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(ok);
+        buttonPanel.add(cancel);
+
+        this.add(buttonPanel);
+
 
         pack();
 
         ok.addActionListener(actionEvent -> {
-            Settings.getInstance().set(Settings.FTP_FIL, filPath.getText());
-            Settings.getInstance().set(Settings.FTP_PRT, ftpPort.getText());
-            Settings.getInstance().set(Settings.WEB_PRT, webPort.getText());
+            for (Map.Entry entry : textFields.entrySet())
+                ((Setting) entry.getKey()).setValue(((JTextField) entry.getValue()).getText());
             dispose();
         });
 

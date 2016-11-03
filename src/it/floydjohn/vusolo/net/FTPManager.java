@@ -1,6 +1,6 @@
 package it.floydjohn.vusolo.net;
 
-import it.floydjohn.vusolo.utils.Settings;
+import it.floydjohn.vusolo.settings.Setting;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -27,8 +27,8 @@ public class FTPManager {
     public void connect() throws IOException {
         ftpClient = new FTPClient();
         try {
-            ftpClient.connect(Settings.getInstance().get(Settings.FTP_IP), Integer.valueOf(Settings.getInstance().get(Settings.FTP_PRT, "21")));
-            ftpClient.login(Settings.getInstance().get(Settings.FTP_USR), Settings.getInstance().get(Settings.FTP_PWD));
+            ftpClient.connect(Setting.FTP_IP.v(), Integer.valueOf(Setting.FTP_PRT.v()));
+            ftpClient.login(Setting.FTP_USR.v(), Setting.FTP_PWD.v());
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         } catch (IOException e) {
@@ -49,7 +49,7 @@ public class FTPManager {
         }
     }
 
-    public void sendFile(String path, String content) throws IOException {
+    public void sendFile(String content) throws IOException {
         try {
             if (ftpClient == null) throw new IOException("ftpClient null");
 
@@ -59,7 +59,7 @@ public class FTPManager {
 
             InputStream inputStream = new FileInputStream(localFile);
 
-            boolean success = ftpClient.storeFile(path, inputStream);
+            boolean success = ftpClient.storeFile(Setting.FTP_FIL.v(), inputStream);
             inputStream.close();
             if (!success) throw new IOException("Failed to send file");
         } catch (IOException e) {
@@ -67,12 +67,12 @@ public class FTPManager {
         }
     }
 
-    public String receiveFile(String path) throws IOException {
+    public String receiveFile() throws IOException {
         try {
             if (ftpClient == null) throw new IOException("ftpClient null");
             File downloadFile = new File(TEMP_FILE);
             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadFile));
-            boolean success = ftpClient.retrieveFile(path, outputStream);
+            boolean success = ftpClient.retrieveFile(Setting.FTP_FIL.v(), outputStream);
             outputStream.close();
 
             if (success) return readTempFile();

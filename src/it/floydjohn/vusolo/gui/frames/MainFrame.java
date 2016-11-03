@@ -2,15 +2,14 @@ package it.floydjohn.vusolo.gui.frames;
 
 import it.floydjohn.vusolo.gui.panels.ActionPanel;
 import it.floydjohn.vusolo.gui.panels.ConnectionPanel;
+import it.floydjohn.vusolo.gui.panels.InfoPanel;
 import it.floydjohn.vusolo.net.FTPManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-/**
- * Created by alessandro on 10/16/16.
- */
+
 public class MainFrame extends JFrame{
 
 
@@ -34,6 +33,8 @@ public class MainFrame extends JFrame{
         panel.add(connectionPanel, c);
         c.gridy = 1;
         panel.add(actionPanel, c);
+        c.gridy = 2;
+        panel.add(InfoPanel.getInstance(), c);
 
         this.setContentPane(panel);
         setResizable(true);
@@ -47,11 +48,6 @@ public class MainFrame extends JFrame{
                 FTPManager.getInstance().disconnect();
             }
         });
-    }
-
-
-    public ConnectionPanel getConnectionPanel() {
-        return connectionPanel;
     }
 
     public ActionPanel getActionPanel() {

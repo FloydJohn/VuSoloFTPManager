@@ -4,7 +4,7 @@ import it.floydjohn.vusolo.gui.components.CopyPastePopUp;
 import it.floydjohn.vusolo.gui.dialogs.SettingsDialog;
 import it.floydjohn.vusolo.gui.frames.MainFrame;
 import it.floydjohn.vusolo.net.FTPManager;
-import it.floydjohn.vusolo.utils.Settings;
+import it.floydjohn.vusolo.settings.Setting;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
@@ -15,12 +15,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * Created by alessandro on 10/26/16.
- */
 public class ActionPanel extends JPanel {
-
-    private final String defaultFile = "/var/etc/CCam.cfg";
 
     private JButton readButton = new JButton("Read");
     private JButton writeButton = new JButton("Write");
@@ -61,17 +56,19 @@ public class ActionPanel extends JPanel {
 
         readButton.addActionListener(actionEvent -> {
             try {
-                uploadTArea.setText(FTPManager.getInstance().receiveFile(Settings.getInstance().get(Settings.FTP_FIL, defaultFile)));
+                uploadTArea.setText(FTPManager.getInstance().receiveFile());
+                InfoPanel.getInstance().update("File read successfully!", false);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "FTP Error", JOptionPane.ERROR_MESSAGE);
+                InfoPanel.getInstance().update(e.getMessage(), true);
             }
         });
 
         writeButton.addActionListener(actionEvent -> {
             try {
-                FTPManager.getInstance().sendFile(Settings.getInstance().get(Settings.FTP_FIL, defaultFile), uploadTArea.getText());
+                FTPManager.getInstance().sendFile(uploadTArea.getText());
+                InfoPanel.getInstance().update("File written successfully!", false);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "FTP Error", JOptionPane.ERROR_MESSAGE);
+                InfoPanel.getInstance().update(e.getMessage(), true);
             }
         });
 
@@ -80,9 +77,9 @@ public class ActionPanel extends JPanel {
                 Desktop dt = Desktop.getDesktop();
                 if (dt.isSupported(Desktop.Action.BROWSE)) {
                     try {
-                        dt.browse(new URI("http://" + Settings.getInstance().get(Settings.FTP_IP, "") + ":" + Settings.getInstance().get(Settings.WEB_PRT, "80")));
+                        dt.browse(new URI("http://" + Setting.FTP_IP.v() + ":" + Setting.WEB_PRT.v()));
                     } catch (IOException | URISyntaxException e) {
-                        JOptionPane.showMessageDialog(this, e.getMessage(), "WebView Error", JOptionPane.ERROR_MESSAGE);
+                        InfoPanel.getInstance().update(e.getMessage(), true);
                     }
                 }
             }
@@ -92,7 +89,7 @@ public class ActionPanel extends JPanel {
             try {
                 Runtime.getRuntime().exec("filezilla");
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "FileZilla Error", JOptionPane.ERROR_MESSAGE);
+                InfoPanel.getInstance().update(e.getMessage(), true);
             }
         });
 
